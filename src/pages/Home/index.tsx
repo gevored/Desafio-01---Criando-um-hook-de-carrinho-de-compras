@@ -35,9 +35,16 @@ const Home = (): JSX.Element => {
   useEffect(() => {
     async function loadProducts() {
       // TODO
-       const response = await api.get('http://localhost:3333/products')
-       //console.log(response.data)
-       setProducts(response.data)
+      const {data} = await api.get('http://localhost:3333/products') 
+      const listProduct = data as ProductFormatted[]
+
+      const listProductFormatted = listProduct.map(product =>(
+          {
+            ...product,
+            priceFormatted: formatPrice(product.price)
+          }
+      ))
+       setProducts(listProductFormatted)
     }
 
     loadProducts();
@@ -54,7 +61,7 @@ const Home = (): JSX.Element => {
         <li key = {product.id}>
           <img src= {product.image} alt={product.title} />
           <strong>{product.title}</strong>
-          <span>{product.price}</span>
+          <span>{product.priceFormatted}</span>
           <button
             type="button"
             data-testid="add-product-button"
